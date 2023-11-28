@@ -15,7 +15,9 @@ const config: TypeOrmModuleOptions = {
   password: process.env.DATABASE_PASSWORD as string,
   database: process.env.DATABASE_DATABASE,
   logging: true,
-  // synchronize: true,
+  entities: ['dist/**/*.entity{.ts,.js}'],
+  migrations: ['dist/migrations/*{.ts,.js}'],
+  synchronize: false,
   autoLoadEntities: true,
 };
 
