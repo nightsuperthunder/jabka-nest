@@ -4,10 +4,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { UsersModule } from '../users/users.module';
-import { jwtAccessConfig } from '../config/configs';
 
 @Module({
-  imports: [UsersModule, ConfigModule, JwtModule.register(jwtAccessConfig)],
+  imports: [UsersModule, ConfigModule, JwtModule],
   controllers: [AuthController],
   providers: [AuthService, ConfigService],
 })

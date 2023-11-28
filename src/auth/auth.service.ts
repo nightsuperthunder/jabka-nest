@@ -5,11 +5,7 @@ import * as bcrypt from 'bcrypt';
 import { Response } from 'express';
 import { User } from '../users/entities/user.entity';
 import { UsersService } from '../users/users.service';
-import {
-  IJwtConfig,
-  JWT_ACCESS_CONFIG,
-  JWT_REFRESH_CONFIG,
-} from '../config/jwt.config';
+import { ITokensConfig, JWT_CONFIG } from '../config/jwt.config';
 import { CreateUserDto } from '../users/dto';
 
 @Injectable()
@@ -49,7 +45,9 @@ export class AuthService {
 
   async refresh(refresh: string, response: Response): Promise<any> {
     try {
-      const { secret } = this.configService.get<IJwtConfig>(JWT_REFRESH_CONFIG);
+      const {
+        refresh: { secret },
+      } = this.configService.get<ITokensConfig>(JWT_CONFIG);
 
       const { sub } = await this.jwtService.verifyAsync(refresh, {
         secret,
@@ -73,25 +71,27 @@ export class AuthService {
   }
 
   async generateTokens(user: User, response: Response) {
-    const accessConf = this.configService.get<IJwtConfig>(JWT_ACCESS_CONFIG);
-    const refreshConf = this.configService.get<IJwtConfig>(JWT_REFRESH_CONFIG);
+    const tokensConf = this.configService.get<ITokensConfig>(JWT_CONFIG);
 
     const payload = { sub: user.id, username: user.username };
-    const accessToken = await this.jwtService.signAsync(payload);
+    const accessToken = await this.jwtService.signAsync(payload, {
+      secret: tokensConf.access.secret,
+      expiresIn: tokensConf.access.expiration,
+    });
     const refreshToken = await this.jwtService.signAsync(payload, {
-      secret: refreshConf.secret,
-      expiresIn: refreshConf.expiration,
+      secret: tokensConf.refresh.secret,
+      expiresIn: tokensConf.refresh.expiration,
     });
 
     response.cookie('access_token', accessToken, {
       sameSite: 'none',
       secure: true,
-      expires: new Date(Date.now() + 1000 * accessConf.expiration),
+      expires: new Date(Date.now() + 1000 * tokensConf.access.expiration),
     });
     response.cookie('refresh_token', refreshToken, {
       sameSite: 'none',
       secure: true,
-      expires: new Date(Date.now() + 1000 * refreshConf.expiration),
+      expires: new Date(Date.now() + 1000 * tokensConf.refresh.expiration),
     });
 
     return { accessToken, refreshToken };
