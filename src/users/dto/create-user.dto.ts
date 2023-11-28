@@ -19,7 +19,7 @@ export class CreateUserDto {
   @Expose()
   @IsEmail()
   @ApiProperty({
-    default: 'email@email.com',
+    default: 'email@email.org',
   })
   email: string;
 
