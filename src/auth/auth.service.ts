@@ -10,6 +10,7 @@ import {
   JWT_ACCESS_CONFIG,
   JWT_REFRESH_CONFIG,
 } from '../config/jwt.config';
+import { CreateUserDto } from '../users/dto';
 
 @Injectable()
 export class AuthService {
@@ -60,6 +61,15 @@ export class AuthService {
     } catch {
       throw new UnauthorizedException();
     }
+  }
+
+  async register(
+    createUserDto: CreateUserDto,
+    response: Response,
+  ): Promise<any> {
+    const user = await this.usersService.create(createUserDto);
+
+    return this.generateTokens(user, response);
   }
 
   async generateTokens(user: User, response: Response) {

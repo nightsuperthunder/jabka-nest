@@ -38,4 +38,13 @@ export class AuthController {
   refresh(@Body() body: any, @Res({ passthrough: true }) response: Response) {
     return this.authService.refresh(body.refreshToken, response);
   }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('register')
+  register(
+    @Body() createUserDto: CreateUserDto,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    return this.authService.register(createUserDto, response);
+  }
 }
