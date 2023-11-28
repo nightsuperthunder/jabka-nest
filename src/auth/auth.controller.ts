@@ -5,6 +5,7 @@ import {
   HttpStatus,
   Post,
   Res,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
@@ -12,6 +13,7 @@ import { AuthService } from './auth.service';
 import { SignInDto } from './dto/sign-in.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { CreateUserDto } from '../users/dto';
+import { TransformRequestInterceptor } from '../common/interceptors';
 
 @ApiTags('Auth')
 @Controller('api/auth')
@@ -48,6 +50,7 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('register')
+  @UseInterceptors(new TransformRequestInterceptor(CreateUserDto))
   register(
     @Body() createUserDto: CreateUserDto,
     @Res({ passthrough: true }) response: Response,
