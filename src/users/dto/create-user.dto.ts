@@ -1,7 +1,7 @@
-import { Exclude, Expose } from 'class-transformer';
-import { Role } from '../entities/role.enum';
-import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Exclude, Expose } from 'class-transformer';
+import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { Role } from '../../common/enums';
 
 export class CreateUserDto {
   @Expose()

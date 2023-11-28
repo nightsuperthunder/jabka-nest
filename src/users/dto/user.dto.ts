@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
-import { Role } from '../entities/role.enum';
+import { Role } from '../../common/enums';
 
 export class UserDto {
   @Expose()

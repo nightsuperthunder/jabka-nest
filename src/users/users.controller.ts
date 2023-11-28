@@ -11,13 +11,19 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { TransformResponseInterceptor } from '../common/interceptors/transform-response.interceptor';
-import { TransformRequestInterceptor } from '../common/interceptors/transform-request.interceptor';
+import {
+  TransformResponseInterceptor,
+  TransformRequestInterceptor,
+} from '../common/interceptors';
 import { AuthGuard } from '../auth/auth.guard';
+import { RoleGuard } from '../common/guards';
 import { UsersService } from './users.service';
-import { UserDto, CreateUserDto, UpdateUserDto } from './dto';
+import { CreateUserDto, UpdateUserDto, UserDto } from './dto';
+import { Roles } from '../common/decorator';
+import { Role } from '../common/enums';
 
-@UseGuards(AuthGuard)
+@Roles(Role.Admin, Role.Moderator)
+@UseGuards(AuthGuard, RoleGuard)
 @ApiTags('Users')
 @Controller('api/users')
 @UseInterceptors(new TransformResponseInterceptor(UserDto))
@@ -46,6 +52,7 @@ export class UsersController {
     return await this.usersService.update(id, updateUserDto);
   }
 
+  @Roles(Role.Admin)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usersService.remove(id);
