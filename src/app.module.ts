@@ -1,21 +1,16 @@
 import { Module } from '@nestjs/common';
-import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AppConfigModule } from './config/app-config.module';
+import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
+import { typeOrmDatabaseConfig } from './config/configs';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: 'root',
-      database: 'jabka-db',
-      logging: true,
-      synchronize: true,
-      autoLoadEntities: true,
-    }),
+    AppConfigModule,
+    TypeOrmModule.forRoot(typeOrmDatabaseConfig),
     UsersModule,
+    AuthModule,
   ],
 })
 export class AppModule {}

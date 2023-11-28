@@ -2,6 +2,7 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -38,10 +39,18 @@ export class UsersService {
     return await this.usersRepository.find();
   }
 
-  async findOne(id: string) {
+  async findOneById(id: string) {
     const user = await this.usersRepository.findOne({ where: { id } });
     if (!user) {
       throw new NotFoundException('User not found');
+    }
+    return user;
+  }
+
+  async findOneByUsername(username: string) {
+    const user = await this.usersRepository.findOne({ where: { username } });
+    if (!user) {
+      throw new UnauthorizedException('User not found');
     }
     return user;
   }
