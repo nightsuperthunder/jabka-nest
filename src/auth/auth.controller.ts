@@ -6,10 +6,14 @@ import {
   Post,
   Res,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { AuthService } from './auth.service';
 import { SignInDto } from './dto/sign-in.dto';
+import { RefreshTokenDto } from './dto/refresh-token.dto';
+import { CreateUserDto } from '../users/dto';
 
+@ApiTags('Auth')
 @Controller('api/auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
@@ -35,8 +39,11 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('refresh')
-  refresh(@Body() body: any, @Res({ passthrough: true }) response: Response) {
-    return this.authService.refresh(body.refreshToken, response);
+  refresh(
+    @Body() refreshTokenDto: RefreshTokenDto,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    return this.authService.refresh(refreshTokenDto.refreshToken, response);
   }
 
   @HttpCode(HttpStatus.OK)

@@ -10,13 +10,15 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { TransformResponseInterceptor } from '../common/interceptors/transform-response.interceptor';
-import { UsersService } from './users.service';
-import { UserDto, CreateUserDto, UpdateUserDto } from './dto';
 import { TransformRequestInterceptor } from '../common/interceptors/transform-request.interceptor';
 import { AuthGuard } from '../auth/auth.guard';
+import { UsersService } from './users.service';
+import { UserDto, CreateUserDto, UpdateUserDto } from './dto';
 
 @UseGuards(AuthGuard)
+@ApiTags('Users')
 @Controller('api/users')
 @UseInterceptors(new TransformResponseInterceptor(UserDto))
 export class UsersController {
